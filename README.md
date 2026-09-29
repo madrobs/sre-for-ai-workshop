@@ -10,10 +10,14 @@ Do not mention PushPress on slides or in the public repo.
 
 | Repo | Role |
 |---|---|
-| `chalkline-receipts` | Scene: app + Terraform + logs. `main` is already broken. |
-| `sre-for-ai-workshop` | You: prompts, solution, checklist, talk spine. |
+| `chalkline-receipts` | Round 1. Receipt API only. It calls `chalkline-storage` and never mentions AWS. |
+| `chalkline-storage` | Internal object API. This is the service that writes to S3 with its task role. |
+| `chalkline-receipts-terraform` | Platform for dev, stg, and prod. Desired IAM for `chalkline-storage` only. No logs, metrics, or CloudTrail. |
+| `sre-for-ai-workshop` | Facilitator notes. |
 
-## Scene git history (smoking gun)
+The least-privilege commit in Terraform is a decoy: it merges before the outage and is never applied. The live change is a later observability round. See [later-observability.md](later-observability.md).
+
+## Old scene notes (stale)
 
 Newest first:
 
