@@ -1,9 +1,16 @@
-# Solution — do not share in round 1
+# Solution — facilitator only
 
-**Cause:** Terraform IAM for `chalkline-receipts-api` was tightened to `s3:GetObject` only. The task role can no longer `PutObject` on `chalkline-athletics-receipts-prod`. The app still tries to write `drop-ins/{id}.json`. S3 returns `AccessDenied`; the API wraps that as a 500.
+Do not show this during rounds 1–3.
 
-**Why it looked like an app bug:** logs live at the HTTP layer. The well-intentioned commit message sounds like good SRE. The previous commit added S3 retries, which is a magnet for the wrong fix.
+**What production did:** Just before 13:04 UTC on September 19, a manual session assumed `chalkline-prod-platform-admin` with the `ci-deployer` key. It made `chalkline-athletics-receipts-prod` world-readable and replaced the live `chalkline-storage` role policy with `s3:GetObject` only. Writes from the storage task then fail. receipts-api only sees a generic 500.
 
-**Fix (after the session, if they want to tinker):** restore `s3:PutObject` on `${aws_s3_bucket.receipts.arn}/*`. Do not `terraform apply` in the workshop; this is a reading repo.
+**The decoy:** `76376a8` (`chore: least-privilege S3 policy for chalkline-storage`) merged at 09:12 UTC the same morning and was not applied. It describes the same missing `PutObject`, so git looks guilty until CloudTrail shows no apply.
 
-**The point:** desired state and the story of the change were in git the whole time. Without that in context, humans and agents stay in `storeReceipt.js`.
+**What each round can know**
+
+1. receipts-api failed at 13:04. The handler hid the upstream error.
+2. chalkline-storage is the writer. S3 is the object store. The permission is not in this repo.
+3. Desired state gives the storage role `GetObject` only, as of a commit four hours earlier. Apply status is absent.
+4. Metrics time the break to 13:04. CloudTrail names the manual session.
+
+**Fix after the session, if anyone tinkers:** restore `s3:PutObject` on the live storage role, remove the public bucket policy, restore the public access block, and rotate the `ci-deployer` key. Do not `terraform apply` during the workshop.

@@ -2,36 +2,21 @@
 
 Private notes for the Women Who Code October leadership session **How SRE Accidentally Prepared Us for AI**.
 
-Attendee clone: **[chalkline-receipts](https://github.com/madrobs/chalkline-receipts)** (Chalkline Athletics). Keep this guide private until after round 1 or they will skip the hunt.
+Keep this repo private through the session. Do not mention PushPress on slides or in the public repos.
 
-Do not mention PushPress on slides or in the public repo.
+## Rounds
 
-## Repos
+Same incident every time. Add one artifact per round.
 
-| Repo | Role |
-|---|---|
-| `chalkline-receipts` | Round 1. Receipt API only. It calls `chalkline-storage` and never mentions AWS. |
-| `chalkline-storage` | Internal object API. This is the service that writes to S3 with its task role. |
-| `chalkline-receipts-terraform` | Platform for dev, stg, and prod. Desired IAM for `chalkline-storage` only. No logs, metrics, or CloudTrail. |
-| `sre-for-ai-workshop` | Facilitator notes. |
+| Round | Add | What becomes legible |
+|---|---|---|
+| 1 | [chalkline-receipts](https://github.com/madrobs/chalkline-receipts) | A vague 500 at 13:04 UTC. The handler hides the upstream error. |
+| 2 | [chalkline-storage](https://github.com/madrobs/chalkline-storage) | This service writes the object. S3 is the mechanism. The permission change is not here. |
+| 3 | [chalkline-receipts-terraform](https://github.com/madrobs/chalkline-receipts-terraform) | Desired state. `76376a8` drops `s3:PutObject` at 09:12 UTC and was not applied. |
+| 4 | Datadog MCP and AWS MCP | When the errors started, and the manual change that production actually ran. Sandbox not built. |
 
-The least-privilege commit in Terraform is a decoy: it merges before the outage and is never applied. The live change is a later observability round. See [later-observability.md](later-observability.md).
-
-## Old scene notes (stale)
-
-Newest first:
-
-1. `chore: snapshot Saturday front-desk receipt errors` — logs only; decoy if people `git blame` the log file
-2. **`chore: least-privilege S3 policy for receipts-api`** — removes `s3:PutObject`
-3. `fix: retry transient S3 errors when storing drop-in receipts` — app red herring
-4. `feat: drop-in receipts API and AWS baseline for Chalkline Athletics` — healthy IAM (`GetObject` + `PutObject`)
-
-On stage:
-
-    git show c0d18ef -- terraform/iam.tf
-
-(Refresh the hash after any history rewrite: `git log --oneline -- terraform/iam.tf`)
+Script: [talk-spine.md](talk-spine.md). Prompts are in `prompts/`. Full cause: [SOLUTION.md](SOLUTION.md). Round 4 build list: [later-observability.md](later-observability.md).
 
 ## Wifi / theater
 
-Stage path is the real workshop. Laptops are bonus: clone `chalkline-receipts`, paste the round 2 prompt into whatever AI they have. If wifi dies, walk `terraform/iam.tf` and `git log` on the projector.
+You run each round on stage. Attendees clone along if the network holds. Round 4 needs the MCPs on your machine. If they are not ready, ask what they would query and stop there.

@@ -14,4 +14,4 @@ Opening slide (three headlines, same stack):
 2. Encode the standards — lint, CI, tribal rules as checks
 3. Encode the response — observability + runbooks
 
-Workshop demonstrates 1 (and git). Runbooks are the security-lockdown story on slides, not this incident.
+The incident walks the stack in order: receipts-api, chalkline-storage, Terraform, then Datadog and CloudTrail. Runbooks stay the security-lockdown story on slides.

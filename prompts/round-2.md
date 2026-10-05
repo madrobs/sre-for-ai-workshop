@@ -1,23 +1,19 @@
-# Round 2 — full clone (~10 min)
+# Round 2 — storage service (~7 min)
 
-Same question, now with **Chalkline Athletics in the workspace**: app, `terraform/`, git history, logs.
+Add `chalkline-storage` to the workspace. Leave Terraform closed.
 
 ## Prompt
 
-> Same incident. You now have the chalkline-receipts repo cloned (app, terraform, logs, git history). Why is the front desk getting AccessDenied on PutObject? What changed?
+> Same incident. receipts-api calls the chalkline-storage service. You now have that repo too. Why is the write failing? What would you change in this service?
 
 ## What good looks like
 
-- `terraform/iam.tf` — `s3:PutObject` gone; comment claims the printer already has the PDF
-- `git show` on `chore: least-privilege S3 policy for receipts-api`
-- Security group still allows 443 egress (same pattern, not this outage)
-- App retries never fire: `AccessDenied` is not retryable
+- `POST /objects` is the write path receipts-api uses
+- `OBJECTS_BUCKET` selects S3. The task role is the credential. There is no access key in the repo
+- A rejected write is logged here as `object write failed` with `errorName` and `errorCode`, then returned to receipts-api as `failed to write object`
+- The receipts-api 500 is that generic response. The storage service is where an AccessDenied would be visible
+- Tests still pass. Nothing in this repo shows a permission change
 
-## If nobody has wifi
+## Say this
 
-On the projector:
-
-    git log --oneline -- terraform/iam.tf
-    git show <least-privilege-hash> -- terraform/iam.tf
-
-Then: an agent (or a new engineer) can only do this if the map is in the repo.
+The mechanism is legible now. Desired state and live state are still missing. An agent that says "check the bucket policy" is guessing. Round 3 is where that guess can be checked against what we meant to deploy.

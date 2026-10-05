@@ -1,27 +1,23 @@
-# Round 1 — app + logs only (~8 min)
+# Round 1 — receipts API only (~7 min)
 
-Do **not** send people to Terraform yet. Paste logs (and optionally `app/src/storeReceipt.js`) on the projector.
+Repo: `chalkline-receipts`. Do not mention storage, Terraform, or AWS.
 
 ## What they see
 
-From `chalkline-receipts` (or a slide copy of `logs/prod-latest.log`):
+`logs/prod-latest.log`
 
-- `failed to store receipt: Access Denied`
-- `code: AccessDenied`
-- `awsAction: PutObject`
-- `status: 500`
-- front desk reprint queue backing up
+- Receipts succeed until 12:52 UTC
+- At 13:04 UTC, `receipt request failed` with status 500
+- No error code, no upstream body, no bucket
 
-App tests still pass. There is retry logic for `SlowDown` / `InternalError` / `NetworkingError`.
+`app/src/storeReceipt.js` retries `Throttled`, `Timeout`, and `Unavailable`, then throws `failed to save receipt`. The handler returns "Something went wrong."
 
-## Prompt (laptops, if wifi)
+## Prompt
 
-> Chalkline Athletics. Drop-in day passes at the front desk started failing Saturday around 13:00 UTC. Here are the logs and the receipts service code. Why are sales returning 500? What would you change?
-
-Attach or paste: `logs/prod-latest.log`, `app/src/storeReceipt.js`, `app/src/server.js`.
+> Chalkline Athletics. Drop-in receipts at the front desk started failing on September 19 around 13:04 UTC. You have the receipts-api repo: app code and logs/prod-latest.log. Why are sales returning 500? What would you change?
 
 ## Let it fail
 
-Typical wrong turns: more retries, AWS SDK bug, “S3 is down,” blame the Saturday-rush commit, add client-side PDF generation. AccessDenied on PutObject is a permission problem; the app cannot fix it.
+Typical wrong turns: more retries, a bug in the handler, "the storage service is down," blame the health check or the id check. The app only knows that a POST to the storage service failed.
 
-Say out loud: **the failure is not in the handler. The map of the system is missing.**
+Say: the caller is doing its job. The next thing an agent needs is the service it calls, not a better prompt.
