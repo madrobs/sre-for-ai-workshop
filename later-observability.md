@@ -6,7 +6,7 @@ Prompt: [prompts/round-4.md](prompts/round-4.md).
 
 ## The mismatch
 
-`76376a8` merges at 09:12 UTC on September 19 and is never applied. `chalkline-receipts` logs break at 13:04 UTC. Git is not the incident clock.
+`f14c3df` merges at 09:12 UTC on September 19 and is never applied. `chalkline-receipts` logs break at 13:04 UTC. Git is not the incident clock.
 
 What changes production, just before 13:04, is a manual session from a suspicious IP. It uses the `ci-deployer` key to assume `chalkline-prod-platform-admin`, then:
 

@@ -12,7 +12,7 @@ Same incident every time. Add one artifact per round.
 |---|---|---|
 | 1 | [chalkline-receipts](https://github.com/madrobs/chalkline-receipts) | A vague 500 at 13:04 UTC. The handler hides the upstream error. |
 | 2 | [chalkline-storage](https://github.com/madrobs/chalkline-storage) | This service writes the object. S3 is the mechanism. The permission change is not here. |
-| 3 | [chalkline-receipts-terraform](https://github.com/madrobs/chalkline-receipts-terraform) | Desired state. `76376a8` drops `s3:PutObject` at 09:12 UTC and was not applied. |
+| 3 | [chalkline-receipts-terraform](https://github.com/madrobs/chalkline-receipts-terraform) | Desired state. `f14c3df` drops `s3:PutObject` at 09:12 UTC and was not applied. |
 | 4 | Datadog MCP and AWS MCP | When the errors started, and the manual change that production actually ran. Sandbox not built. |
 
 Script: [talk-spine.md](talk-spine.md). Prompts are in `prompts/`. Full cause: [SOLUTION.md](SOLUTION.md). Round 4 build list: [later-observability.md](later-observability.md).

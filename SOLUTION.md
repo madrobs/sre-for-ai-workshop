@@ -4,7 +4,7 @@ Do not show this during rounds 1–3.
 
 **What production did:** Just before 13:04 UTC on September 19, a manual session assumed `chalkline-prod-platform-admin` with the `ci-deployer` key. It made `chalkline-athletics-receipts-prod` world-readable and replaced the live `chalkline-storage` role policy with `s3:GetObject` only. Writes from the storage task then fail. receipts-api only sees a generic 500.
 
-**The decoy:** `76376a8` (`chore: least-privilege S3 policy for chalkline-storage`) merged at 09:12 UTC the same morning and was not applied. It describes the same missing `PutObject`, so git looks guilty until CloudTrail shows no apply.
+**The decoy:** `f14c3df` (`chore: least-privilege S3 policy for chalkline-storage`) merged at 09:12 UTC the same morning and was not applied. It describes the same missing `PutObject`, so git looks guilty until CloudTrail shows no apply.
 
 **What each round can know**
 

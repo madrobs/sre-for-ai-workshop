@@ -11,7 +11,7 @@ Add `chalkline-receipts-terraform`. This is desired state for dev, stg, and prod
 - `services.tf` sets `STORAGE_URL` to `http://chalkline-storage.<env>.chalkline.internal:4000` and `OBJECTS_BUCKET` to `chalkline-athletics-receipts-<env>`
 - Network rule: receipts-api may call storage on port 4000. The receipts-api task role has no S3 policy
 - `iam.tf` on main allows the storage role `s3:GetObject` only. The comment says the printer already has the PDF
-- `git log -S PutObject -- iam.tf` shows `76376a8` at 09:12 UTC: `chore: least-privilege S3 policy for chalkline-storage`
+- `git log -S PutObject -- iam.tf` shows `f14c3df` at 09:12 UTC: `chore: least-privilege S3 policy for chalkline-storage`
 - Failures in the receipts log start at 13:04 UTC. This repo does not show an apply
 
 ## Say this
